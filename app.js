@@ -5,13 +5,13 @@ var logger = require('morgan');
 
 var app = express();
 
-const companiesRouter = require('./app/api/v1/companies/router'); 
-const categoriesRouter = require('./app/api/v1/categories/router');
-const itemsRouter = require('./app/api/v1/items/router');
 const authCMSRouter = require('./app/api/v1/auth/router');
+const usersRouter = require('./app/api/v1/users/router'); 
+const categoriesRouter = require('./app/api/v1/categories/router');
+const productsRouter = require('./app/api/v1/products/router');
+const paymentsRouter = require('./app/api/v1/payments/router');
 const ordersRouter = require('./app/api/v1/orders/router');
 const customersRouter = require('./app/api/v1/customers/router');
-const paymentsRouter = require('./app/api/v1/payments/router');
 
 // middlewares
 const notFoundMiddleware = require('./app/middlewares/not-found');
@@ -31,14 +31,13 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use(`${v1}/cms`, companiesRouter);
-app.use(`${v1}/cms`, categoriesRouter);
-app.use(`${v1}/cms`, itemsRouter);
-app.use(`${v1}/cms`, authCMSRouter);
-app.use(`${v1}/cms`, ordersRouter);
-app.use(`${v1}/cms`, paymentsRouter);
-// app.use(`${v1}/cms`, userRefreshTokenRouter);
-app.use(`${v1}`, customersRouter);
+app.use(v1, authCMSRouter);
+app.use(v1, usersRouter);
+app.use(v1, categoriesRouter);
+app.use(v1, productsRouter);
+app.use(v1, paymentsRouter);
+app.use(v1, ordersRouter);
+app.use(v1, customersRouter);
 
 // middlewares
 app.use(notFoundMiddleware);

@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const {
     getAllUsers,
-    createCompany,
+    createStore,
     createAdmin,
 } = require('../../../services/mongoose/users');
 
@@ -17,9 +17,9 @@ const getCMSUsers = async (req, res, next) => {
     }
 };
 
-const createCMSCompany = async (req, res, next) => {
+const createCMSStore = async (req, res, next) => {
     try {
-        const result = await createCompany(req);
+        const result = await createStore(req);
 
         res.status(StatusCodes.CREATED).json({
             data: result,
@@ -29,7 +29,7 @@ const createCMSCompany = async (req, res, next) => {
     }
 };
 
-const createCompanyAdmin = async (req, res, next) => {
+const createStoreAdmin = async (req, res, next) => {
     try {
         const result = await createAdmin(req);
 
@@ -43,6 +43,6 @@ const createCompanyAdmin = async (req, res, next) => {
 
 module.exports = {
     getCMSUsers,
-    createCMSCompany,
-    createCompanyAdmin,
+    createCMSStore,
+    createStoreAdmin,
 };

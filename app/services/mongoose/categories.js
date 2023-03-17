@@ -3,7 +3,7 @@ const Categories = require('../../api/v1/categories/model');
 const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getAllCategories = async (req) => {
-    const result = await Categories.find({ company: req.user.company });
+    const result = await Categories.find({ store: req.user.store });
 
     return result;
 };
@@ -13,14 +13,14 @@ const createCategories = async (req) => {
 
     const check = await Categories.findOne({
         name,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     if (check) throw new BadRequestError('kategori nama duplikat');
 
     const result = await Categories.create({
         name,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     return result;
@@ -29,7 +29,7 @@ const createCategories = async (req) => {
 const getOneCategories = async (req) => {
     const { id } = req.params;
 
-    const result = await Categories.findOne({ _id: id, company: req.user.company });
+    const result = await Categories.findOne({ _id: id, store: req.user.store });
 
     if (!result) throw new NotFoundError(`Tidak ada Kategori dengan id :  ${id}`);
 
@@ -42,7 +42,7 @@ const updateCategories = async (req) => {
 
     const check = await Categories.findOne({
         name,
-        company: req.user.company,
+        store: req.user.store,
         _id: { $ne: id },
     });
 
@@ -64,7 +64,7 @@ const deleteCategories = async (req) => {
     
     const result = await Categories.findOne({
         _id: id,
-        company: req.user.company,
+        store: req.user.store,
     });
     
     if (!result) throw new NotFoundError(`Tidak ada Kategori dengan id :  ${id}`);

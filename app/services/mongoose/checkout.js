@@ -1,5 +1,5 @@
 const Customers = require('../../api/v1/customers/model');
-const Items = require('../../api/v1/items/model');
+const Items = require('../../api/v1/products/model');
 const Orders = require('../../api/v1/orders/model');
 const Payments = require('../../api/v1/payments/model');
 

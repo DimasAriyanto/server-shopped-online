@@ -4,24 +4,20 @@ const {
     signup,
     activeCustomers,
     signin,
-    getAllLandingPage,
+    getLandingPage,
     getDetailLandingPage,
-    getDashboard,
     checkout,
-    getAllPayment,
     discount,
 } = require('./controller');
 
 const { authenticateCustomers } = require('../../../middlewares/auth');
 
-router.post('/auth/signup', signup);
-router.post('/auth/signin', signin);
-router.put('/active', activeCustomers);
-router.get('/items', getAllLandingPage);
-router.get('/items/:id', getDetailLandingPage);
-router.get('/payments/:organizer', authenticateCustomers, getAllPayment);
-router.get('/orders', authenticateCustomers, getDashboard);
-router.post('/checkout', authenticateCustomers, checkout);
+router.post('/customers/auth/signup', signup);
+router.post('/customers/auth/signin', signin);
+router.put('/customers/active', activeCustomers);
+router.get('/', getLandingPage);
+router.get('/:id', getDetailLandingPage);
+router.post('/products/checkout', authenticateCustomers, checkout);
 router.post('/discount', authenticateCustomers, discount);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ItemSchema = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -19,7 +19,7 @@ const ItemSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        statusItem: {
+        statusProduct: {
             type: String,
             enum: ['Draft', 'Published'],
             default: 'Draft',
@@ -29,13 +29,13 @@ const ItemSchema = new mongoose.Schema(
             ref: 'Category',
             required: true,
         },
-        company: {
+        store: {
             type: mongoose.Types.ObjectId,
-            ref: 'Company',
+            ref: 'Store',
             required: true,
         },
     },
     { timestamps: true }
 );
 
-module.exports = mongoose.model('Item', ItemSchema);
+module.exports = mongoose.model('Product', ProductSchema);

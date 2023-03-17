@@ -2,11 +2,9 @@ const {
     signupCustomers,
     activateCustomers,
     signinCustomers,
-    getAllItems,
-    getOneItem,
-    getAllOrders,
+    getAllProducts,
+    getOneProducts,
     checkoutOrder,
-    getAllPaymentByCompany,
 } = require('../../../services/mongoose/customers');
 
 const { StatusCodes } = require('http-status-codes');
@@ -48,21 +46,9 @@ const signin = async (req, res, next) => {
     }
 };
 
-const getAllLandingPage = async (req, res, next) => {
+const getLandingPage = async (req, res, next) => {
     try {
-        const result = await getAllItems(req);
-
-        res.status(StatusCodes.OK).json({
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-const getDashboard = async (req, res, next) => {
-    try {
-        const result = await getOneItem(req);
+        const result = await getAllProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -74,19 +60,7 @@ const getDashboard = async (req, res, next) => {
 
 const getDetailLandingPage = async (req, res, next) => {
     try {
-        const result = await getAllOrders(req);
-
-        res.status(StatusCodes.OK).json({
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-const getAllPayment = async (req, res, next) => {
-    try {
-        const result = await getAllPaymentByCompany(req);
+        const result = await getOneProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -124,10 +98,8 @@ module.exports = {
     signup,
     activeCustomers,
     signin,
-    getAllLandingPage,
+    getLandingPage,
     getDetailLandingPage,
-    getDashboard,
     checkout,
-    getAllPayment,
     discount
 };

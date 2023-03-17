@@ -1,29 +1,17 @@
 const {
-    getAllItems,
-    createItems,
-    getOneItems,
-    updateItems,
-    deleteItems,
-    changeStatusItems,
-} = require('../../../services/mongoose/items');
+    getAllProducts,
+    createProducts,
+    getOneProducts,
+    updateProducts,
+    deleteProducts,
+    changeStatusProducts,
+} = require('../../../services/mongoose/products');
 
 const { StatusCodes } = require('http-status-codes');
 
-const create = async (req, res, next) => {
-    try {
-        const result = await createItems(req);
-
-        res.status(StatusCodes.CREATED).json({
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
 const index = async (req, res, next) => {
     try {
-        const result = await getAllItems(req);
+        const result = await getAllProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -33,9 +21,21 @@ const index = async (req, res, next) => {
     }
 };
 
+const create = async (req, res, next) => {
+    try {
+        const result = await createProducts(req);
+
+        res.status(StatusCodes.CREATED).json({
+            data: result,
+        });    
+    } catch (err) {
+        next(err);
+    }    
+};    
+
 const find = async (req, res, next) => {
     try {
-        const result = await getOneItems(req);
+        const result = await getOneProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -47,7 +47,7 @@ const find = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const result = await updateItems(req);
+        const result = await updateProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -59,7 +59,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        const result = await deleteItems(req);
+        const result = await deleteProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,
@@ -71,7 +71,7 @@ const destroy = async (req, res, next) => {
 
 const changeStatus = async (req, res, next) => {
     try {
-        const result = await changeStatusItems(req);
+        const result = await changeStatusProducts(req);
 
         res.status(StatusCodes.OK).json({
             data: result,

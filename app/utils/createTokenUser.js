@@ -4,7 +4,7 @@ const createTokenUser = (user) => {
     userId: user._id,
     role: user.role,
     email: user.email,
-    company: user.company,
+    store: user.store,
   };
 };
 const createTokenCustomers = (customers) => {

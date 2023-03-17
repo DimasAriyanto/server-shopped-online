@@ -48,10 +48,6 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        // discount: {
-        //     type: String,
-        //     required: true,
-        // },
         orderItems: [orderDetailSchema],
         customer: {
             type: mongoose.Types.ObjectId,

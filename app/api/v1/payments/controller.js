@@ -8,18 +8,6 @@ const {
     deletePayments,
 } = require('../../../services/mongoose/payments');
 
-const create = async (req, res, next) => {
-    try {
-        const result = await createPayments(req);
-
-        res.status(StatusCodes.CREATED).json({
-            data: result,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
 const index = async (req, res, next) => {
     try {
         const result = await getAllPayments(req);
@@ -31,6 +19,18 @@ const index = async (req, res, next) => {
         next(err);
     }
 };
+
+const create = async (req, res, next) => {
+    try {
+        const result = await createPayments(req);
+
+        res.status(StatusCodes.CREATED).json({
+            data: result,
+        });    
+    } catch (err) {
+        next(err);
+    }    
+};    
 
 const find = async (req, res, next) => {
     try {

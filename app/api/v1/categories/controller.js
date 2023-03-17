@@ -8,11 +8,11 @@ const {
 
 const { StatusCodes } = require('http-status-codes');
 
-const create = async (req, res, next) => {
+const index = async (req, res, next) => {
     try {
-        const result = await createCategories(req);
+        const result = await getAllCategories(req);
 
-        res.status(StatusCodes.CREATED).json({
+        res.status(StatusCodes.OK).json({
             data: result,
         });
     } catch (err) {
@@ -20,11 +20,11 @@ const create = async (req, res, next) => {
     }
 };
 
-const index = async (req, res, next) => {
+const create = async (req, res, next) => {
     try {
-        const result = await getAllCategories(req);
+        const result = await createCategories(req);
 
-        res.status(StatusCodes.OK).json({
+        res.status(StatusCodes.CREATED).json({
             data: result,
         });
     } catch (err) {
@@ -70,8 +70,8 @@ const destroy = async (req, res, next) => {
 
 module.exports = {
     index,
+    create,
     find,
     update,
     destroy,
-    create,
 };

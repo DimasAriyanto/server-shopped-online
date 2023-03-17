@@ -1,22 +1,22 @@
 const Users = require('../../api/v1/users/model');
-const Companies = require('../../api/v1/companies/model');
+const Stores = require('../../api/v1/stores/model');
 const { BadRequestError } = require('../../errors');
 
-const createCompany = async (req) => {
-    const { company, name, email, password, confirmPassword, role } = req.body;
+const createStore = async (req) => {
+    const { store, name, email, password, confirmPassword, role } = req.body;
 
     if (password !== confirmPassword) {
         throw new BadRequestError('Password dan Konfirmasi password tidak sama');
     }
 
-    const result = await Companies.create({ company });
+    const result = await Stores.create({ store });
 
     const users = await Users.create({
         name,
         email,
         password,
         role,
-        company: result._id,
+        store: result._id,
     });
 
     delete users._doc.password;
@@ -36,7 +36,7 @@ const createAdmin = async (req, res) => {
         email,
         password,
         role,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     return result;
@@ -48,4 +48,4 @@ const getAllUsers = async (req) => {
     return result;
 };
 
-module.exports = { createCompany, createAdmin, getAllUsers };
+module.exports = { createStore, createAdmin, getAllUsers };

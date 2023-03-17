@@ -13,9 +13,9 @@ const PaymentSchema = new mongoose.Schema(
             enum: [true, false],
             default: true,
         },
-        company: {
+        store: {
             type: mongoose.Types.ObjectId,
-            ref: 'Company',
+            ref: 'Store',
             required: true,
         },
     },

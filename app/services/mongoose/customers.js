@@ -1,5 +1,5 @@
 const Customers = require('../../api/v1/customers/model');
-const Items = require('../../api/v1/items/model');
+const Products = require('../../api/v1/products/model');
 const Orders = require('../../api/v1/orders/model');
 const Payments = require('../../api/v1/payments/model');
 
@@ -95,34 +95,28 @@ const signinCustomers = async (req) => {
     return token;
 };
 
-const getAllItems = async (req) => {
-    const result = await Items.find({ statusItem: 'Published' })
+const getAllProducts = async (req) => {
+    const result = await Products.find({ statusItem: 'Published' })
         .populate('category')
         .select('_id name price stock');
 
     return result;
 };
 
-const getOneItem = async (req) => {
+const getOneProducts= async (req) => {
     const { id } = req.params;
-    const result = await Items.findOne({ _id: id })
+    const result = await Products.findOne({ _id: id, statusItem: 'Published' })
         .populate('category');
 
-    if (!result) throw new NotFoundError(`Tidak ada item dengan id :  ${id}`);
+    if (!result) throw new NotFoundError(`Tidak ada produk dengan id :  ${id}`);
 
-    return result;
-};
-
-const getAllOrders = async (req) => {
-    console.log(req.customers);
-    const result = await Orders.find({ customers: req.customers.id });
     return result;
 };
 
 const checkoutOrder = async (req) => {
-    const { item, listItems, personalDetail, payment } = req.body;
+    const { item, listProducts, personalDetail, payment } = req.body;
 
-    const checkingItem = await Items.findOne({ _id: item });
+    const checkingItem = await Products.findOne({ _id: item });
     if (!checkingItem) {
         throw new NotFoundError('Tidak ada item dengan id : ' + item);
     }
@@ -137,7 +131,7 @@ const checkoutOrder = async (req) => {
 
     let totalPay = 0,
         totalOrderItem = 0;
-    await listItems.forEach((list) => {
+    await listProducts.forEach((list) => {
         if (list.name === checkingItem.name) {
             if (list.sumItem > checkingItem.stock) {
                 throw new NotFoundError('Stock item tidak mencukupi');
@@ -157,7 +151,7 @@ const checkoutOrder = async (req) => {
         personalDetail: personalDetail,
         totalPay,
         totalOrderItem,
-        orderItems: listItems,
+        orderProducts: listProducts,
         customer: req.customers.id,
         payment,
         item,
@@ -167,21 +161,11 @@ const checkoutOrder = async (req) => {
     return result;
 };
 
-const getAllPaymentByCompany = async (req) => {
-    const { company } = req.params;
-
-    const result = await Payments.find({ company: company });
-
-    return result;
-};
-
 module.exports = {
     signupCustomers,
     activateCustomers,
     signinCustomers,
-    getAllItems,
-    getOneItem,
-    getAllOrders,
+    getAllProducts,
+    getOneProducts,
     checkoutOrder,
-    getAllPaymentByCompany,
 };

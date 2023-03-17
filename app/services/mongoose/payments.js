@@ -3,7 +3,7 @@ const Payments = require('../../api/v1/payments/model');
 const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getAllPayments = async (req) => {
-    let condition = { company: req.user.company };
+    let condition = { store: req.user.store };
 
     const result = await Payments.find(condition);
 
@@ -13,13 +13,13 @@ const getAllPayments = async (req) => {
 const createPayments = async (req) => {
     const { type } = req.body;
 
-    const check = await Payments.findOne({ type, company: req.user.company });
+    const check = await Payments.findOne({ type, store: req.user.store });
 
-    if (check) throw new BadRequestError('Tipe pembayaran duplikat');
+    if (check) throw new BadRequestError('Tipe pembayaran sudah ada');
 
     const result = await Payments.create({
         type,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     return result;
@@ -30,7 +30,7 @@ const getOnePayments = async (req) => {
 
     const result = await Payments.findOne({
         _id: id,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     if (!result)
@@ -41,19 +41,19 @@ const getOnePayments = async (req) => {
 
 const updatePayments = async (req) => {
     const { id } = req.params;
-    const { type, image } = req.body;
+    const { type } = req.body;
 
     const check = await Payments.findOne({
         type,
-        company: req.user.company,
+        store: req.user.store,
         _id: { $ne: id },
     });
 
-    if (check) throw new BadRequestError('Tipe pembayaran duplikat');
+    if (check) throw new BadRequestError('Tipe pembayaran sudah ada');
 
     const result = await Payments.findOneAndUpdate(
         { _id: id },
-        { company: req.user.company },
+        { store: req.user.store },
         { new: true, runValidators: true }
     );
 
@@ -68,7 +68,7 @@ const deletePayments = async (req) => {
 
     const result = await Payments.findOne({
         _id: id,
-        company: req.user.company,
+        store: req.user.store,
     });
 
     if (!result)
