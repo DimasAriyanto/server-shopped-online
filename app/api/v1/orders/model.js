@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const orderDetailSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Nama item harus diisi'],
+        required: [true, 'Nama product harus diisi'],
     },
-    sumItem: {
+    sumProduct: {
         type: Number,
         required: true,
     }
@@ -44,11 +44,11 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        totalOrderItem: {
+        totalOrderProduct: {
             type: Number,
             required: true,
         },
-        orderItems: [orderDetailSchema],
+        orderProducts: [orderDetailSchema],
         customer: {
             type: mongoose.Types.ObjectId,
             ref: 'Customer',
@@ -59,9 +59,9 @@ const orderSchema = new mongoose.Schema(
             ref: 'Payment',
             required: true,
         },
-        item: {
+        product: {
             type: mongoose.Types.ObjectId,
-            ref: 'Item',
+            ref: 'Product',
             required: true,
         },
     },

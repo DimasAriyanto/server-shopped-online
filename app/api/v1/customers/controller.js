@@ -5,10 +5,10 @@ const {
     getAllProducts,
     getOneProducts,
     checkoutOrder,
+    discountOrder,
 } = require('../../../services/mongoose/customers');
 
 const { StatusCodes } = require('http-status-codes');
-const { discountOrder } = require('../../../services/mongoose/checkout');
 
 const signup = async (req, res, next) => {
     try {
@@ -84,7 +84,7 @@ const checkout = async (req, res, next) => {
 
 const discount = async (req, res, next) => {
     try {
-        const result = await discountOrder(req);
+        const result = await discountOrderr(req);
 
         res.status(StatusCodes.CREATED).json({
             data: result,

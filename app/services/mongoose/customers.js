@@ -96,16 +96,16 @@ const signinCustomers = async (req) => {
 };
 
 const getAllProducts = async (req) => {
-    const result = await Products.find({ statusItem: 'Published' })
+    const result = await Products.find({ statusProduct: 'Published' })
         .populate('category')
         .select('_id name price stock');
 
     return result;
 };
 
-const getOneProducts= async (req) => {
+const getOneProducts = async (req) => {
     const { id } = req.params;
-    const result = await Products.findOne({ _id: id, statusItem: 'Published' })
+    const result = await Products.findOne({ _id: id, statusProduct: 'Published' })
         .populate('category');
 
     if (!result) throw new NotFoundError(`Tidak ada produk dengan id :  ${id}`);
@@ -114,11 +114,11 @@ const getOneProducts= async (req) => {
 };
 
 const checkoutOrder = async (req) => {
-    const { item, listProducts, personalDetail, payment } = req.body;
+    const { product, listProducts, personalDetail, payment } = req.body;
 
-    const checkingItem = await Products.findOne({ _id: item });
-    if (!checkingItem) {
-        throw new NotFoundError('Tidak ada item dengan id : ' + item);
+    const checkingProduct = await Products.findOne({ _id: product });
+    if (!checkingProduct) {
+        throw new NotFoundError('Tidak ada product dengan id : ' + product);
     }
 
     const checkingPayment = await Payments.findOne({ _id: payment });
@@ -130,31 +130,111 @@ const checkoutOrder = async (req) => {
     }
 
     let totalPay = 0,
-        totalOrderItem = 0;
+        totalOrderProduct = 0;
     await listProducts.forEach((list) => {
-        if (list.name === checkingItem.name) {
-            if (list.sumItem > checkingItem.stock) {
-                throw new NotFoundError('Stock item tidak mencukupi');
+        if (list.name === checkingProduct.name) {
+            if (list.sumProduct > checkingProduct.stock) {
+                throw new NotFoundError('Stock product tidak mencukupi');
             } else {
-                checkingItem.stock -= list.sumItem;
+                checkingProduct.stock -= list.sumProduct;
 
-                totalOrderItem += list.sumItem;
-                totalPay += checkingItem.price * list.sumItem;
+                totalOrderProduct += list.sumProduct;
+                totalPay += checkingProduct.price * list.sumProduct;
             }
         }
     });
 
-    await checkingItem.save();
+    await checkingProduct.save();
 
     const result = new Orders({
         date: new Date(),
         personalDetail: personalDetail,
         totalPay,
-        totalOrderItem,
+        totalOrderProduct,
         orderProducts: listProducts,
         customer: req.customers.id,
         payment,
-        item,
+        product,
+    });
+
+    await result.save();
+    return result;
+};
+
+const discountOrder = async (req) => {
+    const { product, listProducts, personalDetail, payment } = req.body;
+
+    const checkingProduct = await Products.findOne({ _id: product });
+    if (!checkingProduct) {
+        throw new NotFoundError('Tidak ada product dengan id : ' + product);
+    }
+
+    const checkingPayment = await Payments.findOne({ _id: payment });
+
+    if (!checkingPayment) {
+        throw new NotFoundError(
+            'Tidak ada metode pembayaran dengan id :' + payment
+        );
+    }
+
+    let totalPay = 0,
+        totalOrderProduct = 0,
+        freeRaspberryPi = false,
+        googleHomesCount = 0,
+        alexaSpeakersCount = 0;
+
+    await listProducts.forEach((list) => {
+
+        if (list.name === checkingProduct.name && list.name === 'MacBook Pro') {
+            freeRaspberryPi = true;
+            if (freeRaspberryPi) {
+                const raspberryPi = Products.findOne({ product: 'Raspberry Pi B' });
+                if (raspberryPi) {
+                    checkingProduct.push(raspberryPi);
+                    totalPrice += raspberryPi.price;
+                }
+            }
+        }
+
+        if (list.name === checkingProduct.name && list.name === 'Google Home') {
+            if (googleHomesCount >= 3) {
+                const numFree = Math.floor(googleHomesCount / 3);
+                const googleHome =  Products.findOne({ product: 'Google Home' });
+                if (googleHome) {
+                    for (let i = 0; i < numFree; i++) {
+                        checkingProduct.push(googleHome);
+                        totalPrice += googleHome.price;
+                    }
+                }
+            }
+        }
+
+        if (list.name === checkingProduct.name && list.name === 'Alexa Speaker') {
+            if (alexaSpeakersCount > 3) {
+                const alexaSpeakers =  Products.find({ product: 'Alexa Speaker' });
+                if (alexaSpeakers) {
+                    const discount = 0.1; // 10% discount
+                    alexaSpeakers.forEach((product) => {
+                        checkingProduct.push(product);
+                        totalPrice += product.price * (1 - discount) * product.quantity;
+                    });
+                }
+            }
+        }
+
+    });
+
+    await checkingProduct.save();
+
+    const result = new Orders({
+        date: new Date(),
+        personalDetail: personalDetail,
+        totalPay,
+        totalOrderProduct,
+        orderProducts: listProducts,
+        customer: req.customers.id,
+        payment,
+        product,
     });
 
     await result.save();
@@ -168,4 +248,5 @@ module.exports = {
     getAllProducts,
     getOneProducts,
     checkoutOrder,
+    discountOrder
 };
