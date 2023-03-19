@@ -133,13 +133,13 @@ const checkoutOrder = async (req) => {
         totalOrderProduct = 0;
     await listProducts.forEach((list) => {
         if (list.name === checkingProduct.name) {
-            if (list.sumProduct > checkingProduct.stock) {
+            if (list.quantity > checkingProduct.stock) {
                 throw new NotFoundError('Stock product tidak mencukupi');
             } else {
-                checkingProduct.stock -= list.sumProduct;
+                checkingProduct.stock -= list.quantity;
 
-                totalOrderProduct += list.sumProduct;
-                totalPay += checkingProduct.price * list.sumProduct;
+                totalOrderProduct += list.quantity;
+                totalPay += checkingProduct.price * list.quantity;
             }
         }
     });
@@ -191,19 +191,24 @@ const discountOrder = async (req) => {
                 const raspberryPi = Products.findOne({ product: 'Raspberry Pi B' });
                 if (raspberryPi) {
                     checkingProduct.push(raspberryPi);
-                    totalPrice += raspberryPi.price;
+                    totalPay += raspberryPi.price;
                 }
             }
         }
 
         if (list.name === checkingProduct.name && list.name === 'Google Home') {
             if (googleHomesCount >= 3) {
+                checkingProduct.stock -= list.quantity;
+
+                totalOrderProduct += list.quantity;
+                totalPay += checkingProduct.price * list.quantity;
+
                 const numFree = Math.floor(googleHomesCount / 3);
                 const googleHome =  Products.findOne({ product: 'Google Home' });
                 if (googleHome) {
                     for (let i = 0; i < numFree; i++) {
                         checkingProduct.push(googleHome);
-                        totalPrice += googleHome.price;
+                        totalPay += googleHome.price;
                     }
                 }
             }
@@ -216,7 +221,7 @@ const discountOrder = async (req) => {
                     const discount = 0.1; // 10% discount
                     alexaSpeakers.forEach((product) => {
                         checkingProduct.push(product);
-                        totalPrice += product.price * (1 - discount) * product.quantity;
+                        totalPay += product.price * (1 - discount) * product.quantity;
                     });
                 }
             }

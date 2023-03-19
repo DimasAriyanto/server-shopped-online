@@ -10,7 +10,6 @@ const usersRouter = require('./app/api/v1/users/router');
 const categoriesRouter = require('./app/api/v1/categories/router');
 const productsRouter = require('./app/api/v1/products/router');
 const paymentsRouter = require('./app/api/v1/payments/router');
-const ordersRouter = require('./app/api/v1/orders/router');
 const customersRouter = require('./app/api/v1/customers/router');
 
 // middlewares
@@ -36,7 +35,6 @@ app.use(v1, usersRouter);
 app.use(v1, categoriesRouter);
 app.use(v1, productsRouter);
 app.use(v1, paymentsRouter);
-app.use(v1, ordersRouter);
 app.use(v1, customersRouter);
 
 // middlewares

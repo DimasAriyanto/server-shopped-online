@@ -6,25 +6,25 @@ const {
     authorizeRoles,
 } = require('../../../middlewares/auth');
 
-router.get('/payments', authenticateUser, authorizeRoles('company'), index);
+router.get('/payments', authenticateUser, authorizeRoles('store'), index);
 router.get(
     '/payments/:id',
     authenticateUser,
-    authorizeRoles('company'),
+    authorizeRoles('store'),
     find
 );
 router.put(
     '/payments/:id',
     authenticateUser,
-    authorizeRoles('company'),
+    authorizeRoles('store'),
     update
 );
 router.delete(
     '/payments/:id',
     authenticateUser,
-    authorizeRoles('company'),
+    authorizeRoles('store'),
     destroy
 );
-router.post('/payments', authenticateUser, authorizeRoles('company'), create);
+router.post('/payments', authenticateUser, authorizeRoles('store'), create);
 
 module.exports = router;

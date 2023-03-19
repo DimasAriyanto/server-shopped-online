@@ -5,7 +5,7 @@ const orderDetailSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Nama product harus diisi'],
     },
-    sumProduct: {
+    quantity: {
         type: Number,
         required: true,
     }

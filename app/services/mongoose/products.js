@@ -4,7 +4,7 @@ const { checkingCategories } = require('./categories');
 const { NotFoundError, BadRequestError } = require('../../errors');
 
 const getAllProducts = async (req) => {
-    let condition = { store: req.user.company };
+    let condition = { store: req.user.store };
 
     const result = await Products.find(condition)
         .populate({
@@ -128,10 +128,10 @@ const changeStatusProducts = async (req) => {
     if (!['Draft', 'Published'].includes(statusItem)) {
         throw new BadRequestError('Status harus Draft atau Published');
     }
-    
+
     const checkProduct = await Products.findOne({
         _id: id,
-        organizer: req.user.organizer,
+        store: req.user.store,
     });
 
     if (!checkProduct)
