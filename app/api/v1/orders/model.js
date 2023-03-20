@@ -48,6 +48,11 @@ const orderSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        discount: {
+            type: Number,
+            required: true,
+            default: 0
+        },
         orderProducts: [orderDetailSchema],
         customer: {
             type: mongoose.Types.ObjectId,

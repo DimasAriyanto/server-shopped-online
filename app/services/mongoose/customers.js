@@ -151,6 +151,7 @@ const checkoutOrder = async (req) => {
         personalDetail: personalDetail,
         totalPay,
         totalOrderProduct,
+        discount: 0,
         orderProducts: listProducts,
         customer: req.customers.id,
         payment,
@@ -179,12 +180,9 @@ const discountOrder = async (req) => {
 
     let totalPay = 0,
         totalOrderProduct = 0,
-        freeRaspberryPi = false,
-        googleHomesCount = 0,
-        alexaSpeakersCount = 0;
+        discount = 0;
 
     await listProducts.forEach((list) => {
-
         if (list.name === checkingProduct.name && list.name === 'MacBook Pro') {
             freeRaspberryPi = true;
             if (freeRaspberryPi) {
@@ -197,33 +195,38 @@ const discountOrder = async (req) => {
         }
 
         if (list.name === checkingProduct.name && list.name === 'Google Home') {
-            if (googleHomesCount >= 3) {
+            if (list.quantity >= 3) {
+                const numFree = Math.floor(list.quantity / 3);
+
+                checkingProduct.stock -= list.quantity - numFree;
+
+                totalOrderProduct += list.quantity;
+                totalPay += checkingProduct.price * (list.quantity - numFree);
+
+                discount = numFree * checkingProduct.price;
+
+            } else {
                 checkingProduct.stock -= list.quantity;
 
                 totalOrderProduct += list.quantity;
                 totalPay += checkingProduct.price * list.quantity;
-
-                const numFree = Math.floor(googleHomesCount / 3);
-                const googleHome =  Products.findOne({ product: 'Google Home' });
-                if (googleHome) {
-                    for (let i = 0; i < numFree; i++) {
-                        checkingProduct.push(googleHome);
-                        totalPay += googleHome.price;
-                    }
-                }
             }
         }
 
         if (list.name === checkingProduct.name && list.name === 'Alexa Speaker') {
-            if (alexaSpeakersCount > 3) {
-                const alexaSpeakers =  Products.find({ product: 'Alexa Speaker' });
-                if (alexaSpeakers) {
-                    const discount = 0.1; // 10% discount
-                    alexaSpeakers.forEach((product) => {
-                        checkingProduct.push(product);
-                        totalPay += product.price * (1 - discount) * product.quantity;
-                    });
+            if (list.quantity > 3) {
+                const discount = 0.1; // 10% discount
+                for(let i = 0; i < list.quantity; i++) {
+                    checkingProduct.stock -= i;
+
+                    totalOrderProduct += i;
+                    totalPay += checkingProduct.price * (1 - discount) * i;
                 }
+            } else {
+                checkingProduct.stock -= list.quantity;
+
+                totalOrderProduct += list.quantity;
+                totalPay += checkingProduct.price * list.quantity;
             }
         }
 
@@ -236,6 +239,7 @@ const discountOrder = async (req) => {
         personalDetail: personalDetail,
         totalPay,
         totalOrderProduct,
+        discount,
         orderProducts: listProducts,
         customer: req.customers.id,
         payment,

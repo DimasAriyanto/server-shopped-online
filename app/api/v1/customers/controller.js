@@ -84,7 +84,7 @@ const checkout = async (req, res, next) => {
 
 const discount = async (req, res, next) => {
     try {
-        const result = await discountOrderr(req);
+        const result = await discountOrder(req);
 
         res.status(StatusCodes.CREATED).json({
             data: result,
